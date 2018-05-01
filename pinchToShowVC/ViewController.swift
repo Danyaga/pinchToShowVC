@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning {
 
+    var interactiveTransition: UIPercentDrivenInteractiveTransition!
     
     var isPresenting: Bool = true
     
@@ -17,7 +18,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        
+        self.view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(onPinch(sender:))))
 
     }
 
@@ -53,7 +54,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         // The value here should be the duration of the animations scheduled in the animationTransition method
-        return 0.4
+        return 0.1
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -66,17 +67,47 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
         if (isPresenting) {
             containerView.addSubview(toViewController.view)
             toViewController.view.alpha = 0
-            UIView.animate(withDuration: 0.4, animations: { () -> Void in
+            UIView.animate(withDuration: transitionDuration(using: transitionContext),
+                           animations: { () -> Void in
                 toViewController.view.alpha = 1
             }) { (finished: Bool) -> Void in
                 transitionContext.completeTransition(true)
             }
         } else {
-            UIView.animate(withDuration: 0.4, animations: { () -> Void in
+            UIView.animate(withDuration: transitionDuration(using: transitionContext),
+                           animations: { () -> Void in
                 fromViewController.view.alpha = 0
             }) { (finished: Bool) -> Void in
                 transitionContext.completeTransition(true)
                 fromViewController.view.removeFromSuperview()
+            }
+        }
+    }
+    
+
+    func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        
+        interactiveTransition = UIPercentDrivenInteractiveTransition()
+        //Setting the completion speed gets rid of a weird bounce effect bug when transitions complete
+//        interactiveTransition.completionSpeed = 0.99
+        return interactiveTransition
+        
+    }
+    
+    @objc func onPinch(sender: UIPinchGestureRecognizer) {
+        var scale = sender.scale
+        var velocity = sender.velocity
+        if (sender.state == UIGestureRecognizerState.began){
+            //blueSegue is the name we gave our modal segue, this also starts our interactive transition
+            performSegue(withIdentifier: "blueSegue", sender: self)
+        } else if (sender.state == UIGestureRecognizerState.changed){
+            //We are dividing by 7 here since updateInteractiveTransition expects a number between 0 and 1
+            interactiveTransition.update(scale / 7)
+        } else if sender.state == UIGestureRecognizerState.ended {
+            if velocity > 0 {
+                interactiveTransition.finish()
+            } else {
+                interactiveTransition.cancel()
             }
         }
     }
