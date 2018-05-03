@@ -98,8 +98,16 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
         var scale = sender.scale
         var velocity = sender.velocity
         if (sender.state == UIGestureRecognizerState.began){
-            //blueSegue is the name we gave our modal segue, this also starts our interactive transition
-            performSegue(withIdentifier: "blueSegue", sender: self)
+            
+            let secondViewController = SecondViewController()
+
+            secondViewController.modalPresentationStyle = .custom
+            secondViewController.transitioningDelegate = self
+
+            self.present(secondViewController,
+                         animated: true,
+                         completion: nil)
+            
         } else if (sender.state == UIGestureRecognizerState.changed){
             //We are dividing by 7 here since updateInteractiveTransition expects a number between 0 and 1
             interactiveTransition.update(scale / 7)
