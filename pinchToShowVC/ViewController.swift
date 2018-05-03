@@ -12,8 +12,6 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
 
     var interactiveTransition: UIPercentDrivenInteractiveTransition!
     
-    var isPresenting: Bool = true
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -34,7 +32,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
     func animationControllerForPresentedController(presented: UIViewController!,
                                                    presentingController presenting: UIViewController!,
                                                    sourceController source: UIViewController!) -> UIViewControllerAnimatedTransitioning! {
-        isPresenting = true
+
         return self
     }
     
@@ -45,7 +43,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
     }
     
     func animationControllerForDismissedController(dismissed: UIViewController!) -> UIViewControllerAnimatedTransitioning! {
-        isPresenting = false
+
         return self
     }
     
@@ -64,23 +62,13 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
         var toViewController = transitionContext.viewController(forKey: .to)!
         var fromViewController = transitionContext.viewController(forKey: .from)!
         
-        if (isPresenting) {
-            containerView.addSubview(toViewController.view)
-            toViewController.view.alpha = 0
-            UIView.animate(withDuration: transitionDuration(using: transitionContext),
-                           animations: { () -> Void in
-                toViewController.view.alpha = 1
-            }) { (finished: Bool) -> Void in
-                transitionContext.completeTransition(true)
-            }
-        } else {
-            UIView.animate(withDuration: transitionDuration(using: transitionContext),
-                           animations: { () -> Void in
-                fromViewController.view.alpha = 0
-            }) { (finished: Bool) -> Void in
-                transitionContext.completeTransition(true)
-                fromViewController.view.removeFromSuperview()
-            }
+        containerView.addSubview(toViewController.view)
+        toViewController.view.alpha = 0
+        UIView.animate(withDuration: transitionDuration(using: transitionContext),
+                       animations: { () -> Void in
+                        toViewController.view.alpha = 1
+        }) { (finished: Bool) -> Void in
+            transitionContext.completeTransition(true)
         }
     }
     
@@ -124,6 +112,14 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
 
 
 public class SecondViewController : UIViewController {
+    
+    public override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        
+        
+        self.view.backgroundColor = .blue
+    }
     
     @IBAction func dismiss(_ sender: Any) {
         
