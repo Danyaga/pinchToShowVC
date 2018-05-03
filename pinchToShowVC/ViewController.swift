@@ -54,7 +54,7 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         // The value here should be the duration of the animations scheduled in the animationTransition method
-        return 0.1
+        return 0.4
     }
     
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
