@@ -70,6 +70,10 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
                        animations: { () -> Void in
                         toViewController.view.frame.origin.x = 0
         }) { (finished: Bool) -> Void in
+            if transitionContext.transitionWasCancelled {
+                toViewController.dismiss(animated: false, completion: nil)
+            }
+            
             transitionContext.completeTransition(true)
         }
     }
