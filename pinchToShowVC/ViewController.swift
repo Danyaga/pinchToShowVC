@@ -62,11 +62,13 @@ class ViewController: UIViewController, UIViewControllerTransitioningDelegate, U
         var toViewController = transitionContext.viewController(forKey: .to)!
         var fromViewController = transitionContext.viewController(forKey: .from)!
         
+        toViewController.view.frame.origin.x = toViewController.view.frame.width
+        
         containerView.addSubview(toViewController.view)
-        toViewController.view.alpha = 0
+
         UIView.animate(withDuration: transitionDuration(using: transitionContext),
                        animations: { () -> Void in
-                        toViewController.view.alpha = 1
+                        toViewController.view.frame.origin.x = 0
         }) { (finished: Bool) -> Void in
             transitionContext.completeTransition(true)
         }
